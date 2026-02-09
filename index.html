@@ -3,38 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4 Emily</title>
+    <title>A Royal Proposal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
-        body { background-color: #fff0f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: 'Dancing Script', cursive; }
-        .scroll-container { position: relative; width: 80%; max-width: 800px; height: 750px; } /* */
-        .handle { position: absolute; left: 0; width: 100%; height: 35px; background: linear-gradient(to bottom, #5d3a1a, #8f5e2e 40%, #5d3a1a 100%); border-left: 4px solid #3e250f; border-right: 4px solid #3e250f; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 10; } /* */
+        /* --- General Layout --- */
+        body { 
+            background-color: #fff0f5; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px;
+            box-sizing: border-box;
+            font-family: 'Dancing Script', cursive; 
+            overflow-x: hidden;
+        }
+
+        .scroll-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 600px; 
+            /* Height is relative to the viewport so it fits any screen */
+            height: 80vh; 
+            max-height: 800px;
+        } 
+
+        /* --- Wooden Handles --- */
+        .handle { 
+            position: absolute; 
+            left: -2%; 
+            width: 104%; 
+            height: 30px; 
+            background: linear-gradient(to bottom, #5d3a1a, #8f5e2e 40%, #5d3a1a 100%); 
+            border-left: 4px solid #3e250f; 
+            border-right: 4px solid #3e250f; 
+            box-sizing: border-box; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5); 
+            z-index: 10; 
+        } 
+
         .handle-top { top: 0; border-radius: 8px 8px 0 0; }
-        .handle-bottom-roller { top: 35px; border-radius: 0 0 8px 8px; animation: rollDown 3.5s ease-in-out forwards; box-shadow: 0 -5px 15px rgba(0,0,0,0.6), 0 2px 5px rgba(0,0,0,0.5); } /* */
-        .scroll-paper { position: absolute; top: 35px; left: 2%; width: 96%; height: 0; background-color: #f4e4bc; background-image: url('https://www.transparenttextures.com/patterns/parchment.png'), linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0) 10%, rgba(0,0,0,0) 90%, rgba(0,0,0,0.15)); overflow: hidden; box-shadow: inset 0 0 30px rgba(93, 58, 26, 0.4); z-index: 5; animation: revealPaperVertical 3.5s ease-in-out forwards; border-radius: 2px; } /* */
-        .scroll-content { padding: 50px 40px; height: 620px; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; text-align: center; font-size: 1.4rem; line-height: 1.4; color: #2a241d; text-shadow: 0.3px 0.3px 0 #00000011; } /* */
-        h2 { margin-top: 0; font-size: 3rem; font-weight: 700; border-bottom: 2px double #2a241d44; padding-bottom: 10px; margin-bottom: 10px; } /* */
-        .quest-section { margin-top: 15px; padding: 15px; border: 1px dashed rgba(43, 36, 28, 0.3); background-color: rgba(255,255,255,0.1); border-radius: 4px; opacity: 0; transition: opacity 1s ease-in-out; } /* */
-        .options { display: flex; justify-content: center; gap: 60px; margin-top: 10px; } /* */
-        input[type="checkbox"] { display: none; }
-        label { cursor: pointer; display: flex; align-items: center; font-size: 1.8rem; font-weight: 600; } /* */
-        label::before { content: ''; display: inline-block; width: 30px; height: 30px; margin-right: 12px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath fill='none' stroke='%232a241d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M4.5,4.5 c5,0.5, 15,-1, 21,2 c0.5,5, -1,15, 2,21 c-5,0.5, -15,-1, -21,2 c-0.5,-5, 1,-15, -2,-21 Z' /%3E%3C/svg%3E"); background-size: contain; background-repeat: no-repeat; } /* */
-        input[type="checkbox"]:checked + label::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cg fill='none' stroke='%232a241d' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5,4.5 c5,0.5, 15,-1, 21,2 c0.5,5, -1,15, 2,21 c-5,0.5, -15,-1, -21,2 c-0.5,-5, 1,-15, -2,-21 Z' stroke-width='2'/%3E%3Cpath d='M7,15 c2,5, 5,10, 7,12 c5,-10, 10,-15, 12,-20' /%3E%3C/g%3E%3C/svg%3E"); } /* */
-        .nay-text::after { content: 'Nay'; } /* */
-        label[for="choice-no"]:hover .nay-text::after { content: 'Aye'; color: #800000; } /* */
-        #choice-no:checked + label .nay-text::after { content: 'Aye'; color: #800000; } 
-        .signature { font-size: 3rem; color: #1a1a1a; margin-top: 20px; width: 280px; white-space: nowrap; overflow: hidden; border-bottom: 1px solid rgba(0,0,0,0.15); clip-path: inset(0 100% 0 0); } /* */
-        .wax-seal { width: 85px; height: 85px; background: radial-gradient(circle at 30% 30%, #a52a2a, #800000); border-radius: 52% 48% 55% 45% / 48% 54% 46% 52%; margin-top: 20px; box-shadow: 2px 4px 8px rgba(0,0,0,0.5), inset 0 0 12px rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; color: #d4af37; font-size: 2.5rem; transform: rotate(-5deg) scale(0); border: 2px solid #600; } /* */
         
-        /* Keyframes */
-        @keyframes rollDown { from { top: 35px; } to { top: 685px; } }
-        @keyframes revealPaperVertical { from { height: 0; } to { height: 650px; } }
-        @keyframes rollUp { from { top: 685px; } to { top: 35px; } }
-        @keyframes concealPaperVertical { from { height: 650px; } to { height: 0; } }
+        /* Bottom handle now uses 100% instead of fixed pixels */
+        .handle-bottom-roller { 
+            top: 30px; 
+            border-radius: 0 0 8px 8px; 
+            animation: rollDown 3.5s ease-in-out forwards; 
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.6), 0 2px 5px rgba(0,0,0,0.5); 
+        } 
+
+        /* --- Paper Area --- */
+        .scroll-paper { 
+            position: absolute; 
+            top: 30px; 
+            left: 0; 
+            width: 100%; 
+            height: 0; 
+            background-color: #f4e4bc; 
+            background-image: url('https://www.transparenttextures.com/patterns/parchment.png'), linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0) 10%, rgba(0,0,0,0) 90%, rgba(0,0,0,0.15)); 
+            overflow: hidden; 
+            box-shadow: inset 0 0 30px rgba(93, 58, 26, 0.4); 
+            z-index: 5; 
+            animation: revealPaperVertical 3.5s ease-in-out forwards; 
+            border-radius: 2px; 
+        } 
+
+        .scroll-content { 
+            padding: 40px 20px; 
+            height: 90%; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-start; 
+            align-items: center; 
+            text-align: center; 
+            box-sizing: border-box;
+            color: #2a241d; 
+        } 
+
+        /* Responsive Typography */
+        h2 { font-size: 2rem; margin: 0 0 10px 0; border-bottom: 2px double #2a241d44; padding-bottom: 5px; }
+        p { font-size: 1.1rem; line-height: 1.3; margin: 5px 0; }
+
+        @media (min-width: 600px) {
+            h2 { font-size: 3rem; }
+            p { font-size: 1.4rem; }
+        }
+
+        /* --- Interaction Area --- */
+        .quest-section { 
+            margin-top: 10px; 
+            padding: 10px; 
+            border: 1px dashed rgba(43, 36, 28, 0.3); 
+            opacity: 0; 
+            transition: opacity 1s ease-in-out; 
+            width: 90%;
+        } 
+
+        .options { display: flex; justify-content: space-around; width: 100%; margin-top: 10px; } 
+        input[type="checkbox"] { display: none; }
+        
+        label { 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            font-size: 1.4rem; 
+            font-weight: 600; 
+            padding: 10px; /* Better tap target for mobile */
+        } 
+
+        label::before { 
+            content: ''; 
+            display: inline-block; 
+            width: 25px; height: 25px; 
+            margin-right: 8px; 
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath fill='none' stroke='%232a241d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M4.5,4.5 c5,0.5, 15,-1, 21,2 c0.5,5, -1,15, 2,21 c-5,0.5, -15,-1, -21,2 c-0.5,-5, 1,-15, -2,-21 Z' /%3E%3C/svg%3E"); 
+            background-size: contain; 
+        } 
+
+        input[type="checkbox"]:checked + label::before { 
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cg fill='none' stroke='%232a241d' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5,4.5 c5,0.5, 15,-1, 21,2 c0.5,5, -1,15, 2,21 c-5,0.5, -15,-1, -21,2 c-0.5,-5, 1,-15, -2,-21 Z' stroke-width='2'/%3E%3Cpath d='M7,15 c2,5, 5,10, 7,12 c5,-10, 10,-15, 12,-20' /%3E%3C/g%3E%3C/svg%3E"); 
+        } 
+
+        /* Forced "Aye" logic */
+        .nay-text::after { content: 'Nay'; } 
+        label[for="choice-no"]:hover .nay-text::after,
+        #choice-no:checked + label .nay-text::after { content: 'Aye'; color: #800000; } 
+
+        .signature { font-size: 2rem; color: #1a1a1a; margin-top: 15px; width: 220px; white-space: nowrap; overflow: hidden; border-bottom: 1px solid rgba(0,0,0,0.15); clip-path: inset(0 100% 0 0); } 
+        .wax-seal { width: 70px; height: 70px; background: radial-gradient(circle at 30% 30%, #a52a2a, #800000); border-radius: 50%; margin-top: 10px; display: flex; justify-content: center; align-items: center; color: #d4af37; font-size: 2rem; transform: rotate(-5deg) scale(0); border: 2px solid #600; } 
+        
+        /* --- Responsive Keyframes --- */
+        @keyframes rollDown { from { top: 30px; } to { top: calc(100% - 30px); } }
+        @keyframes revealPaperVertical { from { height: 0; } to { height: calc(100% - 30px); } }
+        @keyframes rollUp { from { top: calc(100% - 30px); } to { top: 30px; } }
+        @keyframes concealPaperVertical { from { height: calc(100% - 30px); } to { height: 0; } }
         @keyframes writeSignature { to { clip-path: inset(0 0 0 0); } }
         @keyframes stampSeal { to { transform: rotate(-5deg) scale(1); } }
 
@@ -68,6 +175,7 @@
     </div>
 
     <script>
+        // Update with your specific Google Apps Script URL
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwXljXKfJiA7ovoTHkQK_BhgTg1vuS9AVLHIJHTERvJ242RvhGvqpvioyi1EVzNXbjp/exec";
 
         function triggerGoogleInvite() {
@@ -75,7 +183,7 @@
         }
 
         function triggerHearts() {
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, shapes: ['heart'], colors: ['#ff0000', '#ff69b4'] });
+            confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 }, shapes: ['heart'], colors: ['#ff0000', '#ff69b4'] });
         }
 
         const checkboxes = document.querySelectorAll('.exclusive-checkbox');
@@ -84,12 +192,15 @@
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', function() {
                 if (this.checked) {
+                    // Disable all options immediately
                     checkboxes.forEach(box => {
                         box.disabled = true;
                         if (box !== this) box.checked = false;
                     });
-                    triggerHearts();
-                    triggerGoogleInvite();
+                    
+                    triggerHearts(); //
+                    triggerGoogleInvite(); //
+                    
                     // Close the scroll after 3 seconds
                     setTimeout(() => {
                         scrollContainer.classList.add('closed');
@@ -98,6 +209,7 @@
             });
         });
 
+        // Optimized Typewriter for responsiveness
         function typeWriter(elementId, text, speed, callback) {
             const element = document.getElementById(elementId);
             let i = 0;
@@ -111,19 +223,20 @@
             typing();
         }
 
+        // Start sequences
         setTimeout(() => {
-            typeWriter('title', 'A Royal Valentine\'s Proposal', 100, () => {
+            typeWriter('title', 'A Royal Proposal', 80, () => {
                 typeWriter('decree-text', 'My dearest Emily, on this enchanted day of love, let it be decreed that my heart belongs to you eternally...', 30, () => {
                     document.getElementById('quest-section').style.opacity = 1;
-                    typeWriter('question-text', 'Will you do me the honor of being my Valentine?', 40, () => {
+                    typeWriter('question-text', 'Will you be my Valentine?', 40, () => {
                         document.getElementById('signature').style.animation = 'writeSignature 2s steps(40) forwards';
                         setTimeout(() => {
                             document.getElementById('wax-seal').style.animation = 'stampSeal 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
-                        }, 2000);
+                        }, 1500);
                     });
                 });
             });
-        }, 500);
+        }, 800);
     </script>
 </body>
 </html>
